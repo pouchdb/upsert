@@ -1,43 +1,210 @@
-PouchDB Plugin Seed
+PouchDB Upsert
 =====
 
-[![Build Status](https://travis-ci.org/pouchdb/plugin-seed.svg)](https://travis-ci.org/pouchdb/plugin-seed)
+[![Build Status](https://travis-ci.org/nolanlawson/pouchdb-upsert.svg)](https://travis-ci.org/nolanlawson/pouchdb-upsert)
 
-Fork this project to build your first PouchDB plugin.  It contains everything you need to test in Node, WebSQL, and IndexedDB.  It also includes a Travis config file so you
-can automatically run the tests in Travis.
+A tiny plugin for PouchDB that provides two convenience methods:
+
+* `upsert()` - update a document, or insert a new one if it doesn't exist ("upsert"). Will keep retrying if it gets 409 conflicts.
+* `putIfNotExists()` - create a new document if it doesn't exist. Does nothing if it already exists.
+
+So basically, if you're tired of manually dealing with 409s or 404s in your PouchDB code, then this is the plugin for you.
+
+Installation
+------
+
+### Browser
+
+```
+bower install pouchdb-upsert
+```
+
+Or download from the `dist/` folder and include it after `pouchdb.js`:
+
+```html
+<script src="pouchdb.js"></script>
+<script src="pouchdb.upsert.js"></script>
+```
+
+### Node.js
+
+```
+npm install pouchdb-upsert
+```
+
+Then attach it to the `PouchDB` object:
+
+```js
+var PouchDB = require('pouchdb');
+PouchDB.plugin(require('pouchdb-upsert'));
+```
+
+API
+--------
+
+
+### Overview
+
+* [`db.upsert(docId, diffFunc [, callback])`](#dbinitlrumaxsize)
+* [`db.putIfNotExists([docId, ] doc [, callback])`](#dblruputkey-blob--type)
+
+### db.upsert(docId, diffFunc [, callback])
+
+Perform an upsert (update or insert) operation. If you don't specify a `callback`, then this function returns a Promise.
+
+* `docId` - the `_id` of the document
+* `diffFunc` - function that takes the existing/new doc as input and returns an updated doc. If this function returns falsey, then the update won't be performed (as an optimization)
+
+##### Example 1
+
+A doc with a basic counter:
+
+```js
+db.upsert('myDocId', function (doc) {
+  if (!doc.count) {
+    doc.count = 0;
+  }
+  doc.count++;
+  return doc;
+}).then(function () {
+  // success
+}).catch(function (err) {
+  // error
+});
+```
+
+Resulting doc (after 1 `upsert`):
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '1-cefef1ec19869d9441a47021f3fd4710',
+  count: 1
+}
+```
+
+Resulting doc (after 3 `upsert`s):
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '3-536ef59f3ed17a181dc683a255caf1d9',
+  count: 3
+}
+```
+
+##### Example 2
+
+A `diffFunc` that ony updates the doc if it's missing a certain field:
+
+```js
+db.upsert('myDocId', function (doc) {
+  if (!doc.touched) {
+    doc.touched = true;
+    return doc;
+  }
+  return false; // don't update the doc; it's already been "touched"
+}).then(function () {
+  // success
+}).catch(function (err) {
+  // error
+});
+```
+
+Resulting doc:
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '1-cefef1ec19869d9441a47021f3fd4710',
+  touched: true
+}
+```
+
+##### Example 3
+
+You can also return a new object. The `_id` and `_rev` are added automatically:
+
+```js
+db.upsert('myDocId', function (doc) {
+  return {thisIs: 'awesome!'};
+}).then(function () {
+  // success
+}).catch(function (err) {
+  // error
+});
+```
+
+Resulting doc:
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '1-cefef1ec19869d9441a47021f3fd4710',
+  thisIs: 'awesome!'
+}
+```
+
+### db.putIfNotExists([docId, ] doc [, callback])
+
+Put a new document with the given `docId`, if it doesn't already exist. If you don't specify a `callback`, then this function returns a Promise.
+
+* `docId` - the `_id` of the document. Optional if you already include it in the `doc`
+* `doc` - the document to insert. Should contain an `_id` if `docId` is not specified
+
+If the document already exists, then the Promise will just resolve immediately.
+
+##### Example 1
+
+Put a doc if it doesn't exist
+
+```js
+db.putIfNotExists('myDocId', {yo: 'dude'}).then(function () {
+  // success
+}).catch(function (err) {
+  // error
+});
+```
+
+Resulting doc:
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '1-cefef1ec19869d9441a47021f3fd4710',
+  yo: 'dude'
+}
+```
+
+If you call `putIfNotExists` multiple times, then the document will not be updated the 2nd, 3rd, or 4th time (etc.).
+
+##### Example 2
+
+You can also just include the `_id` inside the document itself:
+
+```js
+db.putIfNotExists({_id: 'myDocId', yo: 'dude'}).then(function () {
+  // success
+}).catch(function (err) {
+  // error
+});
+```
+
+Resulting doc (same as example 1):
+
+```js
+{
+  _id: 'myDocId',
+  _rev: '1-cefef1ec19869d9441a47021f3fd4710',
+  yo: 'dude'
+}
+```
 
 Building
 ----
     npm install
     npm run build
 
-Your plugin is now located at `dist/pouchdb.mypluginname.js` and `dist/pouchdb.mypluginname.min.js` and is ready for distribution.
-
-Getting Started
--------
-
-**First**, change the `name` in `package.json` to whatever you want to call your plugin.  Change the `build` script so that it writes to the desired filename (e.g. `pouchdb.mypluginname.js`).  Also, change the authors, description, git repo, etc.
-
-**Next**, modify the `index.js` to do whatever you want your plugin to do.  Right now it just adds a `pouch.sayHello()` function that says hello:
-
-```js
-exports.sayHello = utils.toPromise(function (callback) {
-  callback(null, 'hello');
-});
-```
-
-**Optionally**, you can add some tests in `tests/test.js`. These tests will be run both in the local database and a remote CouchDB, which is expected to be running at localhost:5984 in "Admin party" mode.
-
-The sample test is:
-
-```js
-
-it('should say hello', function () {
-  return db.sayHello().then(function (response) {
-    response.should.equal('hello');
-  });
-});
-```
 
 Testing
 ----
@@ -51,8 +218,6 @@ This will run the tests in Node using LevelDB:
 You can also check for 100% code coverage using:
 
     npm run coverage
-
-If you don't like the coverage results, change the values from 100 to something else in `package.json`, or add `/*istanbul ignore */` comments.
 
 
 If you have mocha installed globally you can run single test with:
@@ -76,28 +241,3 @@ You can run e.g.
     CLIENT=selenium:phantomjs npm test
 
 This will run the tests automatically and the process will exit with a 0 or a 1 when it's done. Firefox uses IndexedDB, and PhantomJS uses WebSQL.
-
-What to tell your users
---------
-
-Below is some boilerplate you can use for when you want a real README for your users.
-
-To use this plugin, include it after `pouchdb.js` in your HTML page:
-
-```html
-<script src="pouchdb.js"></script>
-<script src="pouchdb.mypluginname.js"></script>
-```
-
-Or to use it in Node.js, just npm install it:
-
-```
-npm install pouchdb-myplugin
-```
-
-And then attach it to the `PouchDB` object:
-
-```js
-var PouchDB = require('pouchdb');
-PouchDB.plugin(require('pouchdb-myplugin'));
-```
