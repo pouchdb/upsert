@@ -1,0 +1,26 @@
+{
+  "name": "pouchdb-upsert",
+  "main": "dist/pouchdb.upsert.min.js",
+  "version": "1.0.1",
+  "homepage": "https://github.com/nolanlawson/pouchdb-upsert",
+  "authors": [
+    "Nolan Lawson <nolan.lawson@gmail.com>"
+  ],
+  "description": "PouchDB upsert and putIfNotExists functions",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "upsert",
+    "pouchdb"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "vendor"
+  ]
+}
