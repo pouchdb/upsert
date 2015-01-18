@@ -45,8 +45,8 @@ API
 
 ### Overview
 
-* [`db.upsert(docId, diffFunc [, callback])`](#dbinitlrumaxsize)
-* [`db.putIfNotExists([docId, ] doc [, callback])`](#dblruputkey-blob--type)
+* [`db.upsert(docId, diffFunc [, callback])`](#dbupsertdocid-difffunc--callback)
+* [`db.putIfNotExists([docId, ] doc [, callback])`](#dbputifnotexistsdocid--doc--callback)
 
 ### db.upsert(docId, diffFunc [, callback])
 
