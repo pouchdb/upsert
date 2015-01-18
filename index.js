@@ -27,11 +27,7 @@ function upsertInner(db, docId, diffFun) {
       }
       var newDoc = diffFun(doc);
       if (!newDoc) {
-        var res = {updated: false};
-        if (doc._rev) {
-          res.rev = doc._rev;
-        }
-        return fulfill(res);
+        return fulfill({updated: false, rev: doc._rev});
       }
       newDoc._id = docId;
       newDoc._rev = doc._rev;
