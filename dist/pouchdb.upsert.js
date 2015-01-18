@@ -28,7 +28,7 @@ function upsertInner(db, docId, diffFun) {
       }
       var newDoc = diffFun(doc);
       if (!newDoc) {
-        return fulfill(doc);
+        return fulfill({updated: false, rev: doc._rev});
       }
       newDoc._id = docId;
       newDoc._rev = doc._rev;
@@ -38,7 +38,12 @@ function upsertInner(db, docId, diffFun) {
 }
 
 function tryAndPut(db, doc, diffFun) {
-  return db.put(doc)["catch"](function (err) {
+  return db.put(doc).then(function (res) {
+    return {
+      updated: true,
+      rev: res.rev
+    };
+  }, function (err) {
     /* istanbul ignore next */
     if (err.status !== 409) {
       throw err;

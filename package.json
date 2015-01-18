@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-upsert",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "PouchDB upsert and putIfNotExists functions",
   "main": "index.js",
   "repository": {
