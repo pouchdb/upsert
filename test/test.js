@@ -50,7 +50,9 @@ function tests(dbName, dbType) {
     it('should upsert a new doc', function () {
       return db.upsert('myid', function () {
         return {some: 'doc'};
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -138,7 +140,9 @@ function tests(dbName, dbType) {
     it('should throw if no doc _id', function () {
       return db.upsert({}, function () {
         return {some: 'doc'};
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         throw new Error('should not be here');
       }, function (err) {
         should.exist(err);
@@ -148,12 +152,16 @@ function tests(dbName, dbType) {
     it('should upsert an existing doc', function () {
       return db.upsert('myid', function () {
         return {some: 'doc'};
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.upsert('myid', function (doc) {
           doc.version = 2;
           return doc;
         });
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/2-/);
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -169,11 +177,15 @@ function tests(dbName, dbType) {
     it('should not upsert if diffFun returns falsy', function () {
       return db.upsert('myid', function () {
         return {some: 'doc'};
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.upsert('myid', function () {
           return false;
         });
-      }).then(function () {
+      }).then(function (res) {
+        res.updated.should.equal(false);
+        res.rev.should.match(/1-/);
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -186,7 +198,9 @@ function tests(dbName, dbType) {
     });
 
     it('should create a new doc, with sugar', function () {
-      return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function () {
+      return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.get('foo');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -239,7 +253,9 @@ function tests(dbName, dbType) {
     });
 
     it('should not recreate a doc, with sugar', function () {
-      return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function () {
+      return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.putIfNotExists({_id: 'foo', another: 'thing'});
       }).then(function () {
         return db.get('foo');
@@ -254,7 +270,9 @@ function tests(dbName, dbType) {
     });
 
     it('should not recreate a doc, with sugar 2', function () {
-      return db.putIfNotExists('foo', {hey: 'yo'}).then(function () {
+      return db.putIfNotExists('foo', {hey: 'yo'}).then(function (res) {
+        res.updated.should.equal(true);
+        res.rev.should.match(/1-/);
         return db.putIfNotExists('foo', {another: 'thing'});
       }).then(function () {
         return db.get('foo');

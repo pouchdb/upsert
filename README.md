@@ -66,8 +66,8 @@ db.upsert('myDocId', function (doc) {
   }
   doc.count++;
   return doc;
-}).then(function () {
-  // success
+}).then(function (res) {
+  // success, res is {rev: '1-xxx', updated: true}
 }).catch(function (err) {
   // error
 });
@@ -104,8 +104,8 @@ db.upsert('myDocId', function (doc) {
     return doc;
   }
   return false; // don't update the doc; it's already been "touched"
-}).then(function () {
-  // success
+}).then(function (res) {
+  // success, res is {rev: '1-xxx', updated: true}
 }).catch(function (err) {
   // error
 });
@@ -121,6 +121,8 @@ Resulting doc:
 }
 ```
 
+The next time you try to `upsert`, the `res` will be `{rev: '1-xxx', updated: false}`. The `updated: false` indicates that the `upsert` function did not actually update the document, and the `rev` returned will be the previous winning revision.
+
 ##### Example 3
 
 You can also return a new object. The `_id` and `_rev` are added automatically:
@@ -128,8 +130,8 @@ You can also return a new object. The `_id` and `_rev` are added automatically:
 ```js
 db.upsert('myDocId', function (doc) {
   return {thisIs: 'awesome!'};
-}).then(function () {
-  // success
+}).then(function (res) {
+  // success, res is {rev: '1-xxx', updated: true}
 }).catch(function (err) {
   // error
 });
@@ -159,8 +161,8 @@ If the document already exists, then the Promise will just resolve immediately.
 Put a doc if it doesn't exist
 
 ```js
-db.putIfNotExists('myDocId', {yo: 'dude'}).then(function () {
-  // success
+db.putIfNotExists('myDocId', {yo: 'dude'}).then(function (res) {
+  // success, res is {rev: '1-xxx', updated: true}
 }).catch(function (err) {
   // error
 });
@@ -178,13 +180,15 @@ Resulting doc:
 
 If you call `putIfNotExists` multiple times, then the document will not be updated the 2nd, 3rd, or 4th time (etc.).
 
+If it's not updated, then the `res` will be `{rev: '1-xxx', updated: false}`, where `rev` is the first revision and `updated: false` indicates that it wasn't updated.
+
 ##### Example 2
 
 You can also just include the `_id` inside the document itself:
 
 ```js
-db.putIfNotExists({_id: 'myDocId', yo: 'dude'}).then(function () {
-  // success
+db.putIfNotExists({_id: 'myDocId', yo: 'dude'}).then(function (res) {
+  // success, res is {rev: '1-xxx', updated: true}
 }).catch(function (err) {
   // error
 });
