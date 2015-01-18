@@ -13,9 +13,6 @@ if (typeof window !== 'undefined' && window.PouchDB) {
 // the doc, or false if it doesn't need to do an update after all
 function upsertInner(db, docId, diffFun) {
   return new PouchPromise(function (fulfill, reject) {
-    if (docId && typeof docId === 'object') {
-      docId = docId._id;
-    }
     if (typeof docId !== 'string') {
       return reject(new Error('doc id is required'));
     }
@@ -45,7 +42,7 @@ function tryAndPut(db, doc, diffFun) {
     if (err.status !== 409) {
       throw err;
     }
-    return upsertInner(db, doc, diffFun);
+    return upsertInner(db, doc._id, diffFun);
   });
 }
 
@@ -68,7 +65,6 @@ exports.putIfNotExists = function putIfNotExists(docId, doc, cb) {
     doc = docId;
     docId = doc._id;
   }
-  doc._id = docId;
 
   var diffFun = function (existingDoc) {
     if (existingDoc._rev) {
@@ -77,7 +73,7 @@ exports.putIfNotExists = function putIfNotExists(docId, doc, cb) {
     return doc;
   };
 
-  var promise = upsertInner(db, doc._id, diffFun);
+  var promise = upsertInner(db, docId, diffFun);
   if (typeof cb !== 'function') {
     return promise;
   }

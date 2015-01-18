@@ -135,21 +135,6 @@ function tests(dbName, dbType) {
       });
     });
 
-    it('should upsert a new doc, using an object', function () {
-      return db.upsert({_id: 'myid'}, function () {
-        return {some: 'doc'};
-      }).then(function () {
-        return db.get('myid');
-      }).then(function (doc) {
-        should.exist(doc._rev);
-        delete doc._rev;
-        doc.should.deep.equal({
-          _id: 'myid',
-          some: 'doc'
-        });
-      });
-    });
-
     it('should throw if no doc _id', function () {
       return db.upsert({}, function () {
         return {some: 'doc'};
