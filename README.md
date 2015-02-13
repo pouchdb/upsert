@@ -1,7 +1,7 @@
 PouchDB Upsert
 =====
 
-[![Build Status](https://travis-ci.org/nolanlawson/pouchdb-upsert.svg)](https://travis-ci.org/nolanlawson/pouchdb-upsert)
+[![Build Status](https://travis-ci.org/pouchdb/pouchdb-upsert.svg)](https://travis-ci.org/pouchdb/pouchdb-upsert)
 
 A tiny plugin for PouchDB that provides two convenience methods:
 
