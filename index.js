@@ -8,8 +8,6 @@ if (typeof window !== 'undefined' && window.PouchDB) {
   PouchPromise = typeof global.Promise === 'function' ? global.Promise : require('lie');
 }
 
-var clone = require('lodash.clone');
-
 // this is essentially the "update sugar" function from daleharvey/pouchdb#1388
 // the diffFun tells us what delta to apply to the doc.  it either returns
 // the doc, or false if it doesn't need to do an update after all
@@ -28,21 +26,20 @@ function upsertInner(db, docId, diffFun) {
         doc = {};
       }
 
-      // the diff function doesn't need to know the revision id, and we don't
-      // want to rely upon them not mutating it during diffFun
-      var revisionId = doc._rev;
-      delete doc._rev;
-
-      // we are going to mutate the returned object, so it's important to clone
-      // it first - otherwise other code accessing it could malfunction
-      var newDoc = clone(diffFun(doc));
+      // the user might change the _rev, so save it for posterity
+      var docRev = doc._rev;
+      var newDoc = diffFun(doc);
 
       if (!newDoc) {
-        return fulfill({updated: false, rev: revisionId});
+        // if the diffFun returns falsy, we short-circuit as
+        // an optimization
+        return fulfill({updated: false, rev: docRev});
       }
 
+      // users aren't allowed to modify these values,
+      // so reset them here
       newDoc._id = docId;
-      newDoc._rev = revisionId;
+      newDoc._rev = docRev;
       fulfill(tryAndPut(db, newDoc, diffFun));
     });
   });
@@ -84,7 +81,7 @@ exports.putIfNotExists = function putIfNotExists(docId, doc, cb) {
   }
 
   var diffFun = function (existingDoc) {
-    if (existingDoc._id) {
+    if (existingDoc._rev) {
       return false; // do nothing
     }
     return doc;

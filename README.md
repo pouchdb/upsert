@@ -52,8 +52,10 @@ API
 
 Perform an upsert (update or insert) operation. If you don't specify a `callback`, then this function returns a Promise.
 
-* `docId` - the `_id` of the document
-* `diffFunc` - function that takes the existing doc (minus the `_rev` property) as input and returns an updated doc. If this function returns falsey, then the update won't be performed (as an optimization). If the document does not already exist then `{}` will be the input to `diffFunc`.
+* `docId` - the `_id` of the document.
+* `diffFunc` - function that takes the existing doc as input and returns an updated doc.
+  * If this `diffFunc` returns falsey, then the update won't be performed (as an optimization).
+  * If the document does not already exist, then `{}` will be the input to `diffFunc`.
 
 ##### Example 1
 
