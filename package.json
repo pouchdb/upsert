@@ -32,8 +32,9 @@
     "coverage": "npm test --coverage && istanbul check-coverage --lines 100 --function 100 --statements 100 --branches 100"
   },
   "dependencies": {
+    "es3ify": "^0.1.3",
     "lie": "^2.6.0",
-    "es3ify": "^0.1.3"
+    "lodash.clone": "^3.0.1"
   },
   "devDependencies": {
     "bluebird": "^1.0.7",
