@@ -5,7 +5,7 @@ PouchDB Upsert
 
 A tiny plugin for PouchDB that provides two convenience methods:
 
-* `upsert()` - update a document, or insert a new one if it doesn't exist ("upsert"). Will keep retrying if it gets 409 conflicts.
+* `upsert()` - update a document, or insert a new one if it doesn't exist ("upsert"). Will keep retrying (forever) if it gets 409 conflicts.
 * `putIfNotExists()` - create a new document if it doesn't exist. Does nothing if it already exists.
 
 So basically, if you're tired of manually dealing with 409s or 404s in your PouchDB code, then this is the plugin for you.
@@ -53,7 +53,7 @@ API
 Perform an upsert (update or insert) operation. If you don't specify a `callback`, then this function returns a Promise.
 
 * `docId` - the `_id` of the document
-* `diffFunc` - function that takes the existing/new doc as input and returns an updated doc. If this function returns falsey, then the update won't be performed (as an optimization)
+* `diffFunc` - function that takes the existing doc (minus the `_rev` property) as input and returns an updated doc. If this function returns falsey, then the update won't be performed (as an optimization). If the document does not already exist then `{}` will be the input to `diffFunc`.
 
 ##### Example 1
 
@@ -95,7 +95,7 @@ Resulting doc (after 3 `upsert`s):
 
 ##### Example 2
 
-A `diffFunc` that ony updates the doc if it's missing a certain field:
+A `diffFunc` that only updates the doc if it's missing a certain field:
 
 ```js
 db.upsert('myDocId', function (doc) {
@@ -218,7 +218,7 @@ Testing
 This will run the tests in Node using LevelDB:
 
     npm test
-    
+
 You can also check for 100% code coverage using:
 
     npm run coverage

@@ -330,5 +330,66 @@ function tests(dbName, dbType) {
       });
     });
 
+    it('should not allow users to mutate the original doc', function () {
+      return db.put({_id: 'foo'}).then(function () {
+        return db.upsert('foo', function (doc) {
+          doc._rev = 'uh oh a bad rev!';
+          doc._id = 'whoops I messed up the id too!';
+          doc.newValue = 'newValue';
+          return doc;
+        });
+      }).then(function () {
+        return db.get('foo');
+      }).then(function (doc) {
+        doc._id.should.equal('foo');
+        doc._rev.should.match(/^2-/); // 2nd-gen
+        doc.newValue.should.equal('newValue');
+      });
+    });
+
+    it('should pass the right _id/_rev into the diffFun', function () {
+      var rev1;
+      var id1;
+      var rev2;
+      var id2;
+
+      return db.upsert('foo', function (doc) {
+        rev1 = doc._rev;
+        id1 = doc._id;
+        return doc;
+      }).then(function () {
+        return db.upsert('foo', function (doc) {
+          rev2 = doc._rev;
+          id2 = doc._id;
+          return doc;
+        });
+      }).then(function () {
+        should.not.exist(rev1);
+        should.not.exist(id1);
+        should.not.exist(rev2);
+        id2.should.equal('foo');
+      });
+    });
+
+    it('should not mutate local vars', function () {
+      var newDoc = {_id: 'foo', value: 5};
+
+      var doUpsert = function () {
+        return db.upsert('foo', function (doc) {
+          if (doc.value !== newDoc.value) {
+            return newDoc;
+          } else {
+            return false;
+          }
+        });
+      };
+
+      return doUpsert().then(function () {
+        newDoc.value = 6;
+        return doUpsert();
+      }).then(function () {
+        should.not.exist(newDoc._rev);
+      });
+    });
   });
 }
