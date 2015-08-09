@@ -12,36 +12,32 @@ if (typeof window !== 'undefined' && window.PouchDB) {
 // the diffFun tells us what delta to apply to the doc.  it either returns
 // the doc, or false if it doesn't need to do an update after all
 function upsertInner(db, docId, diffFun) {
-  return new PouchPromise(function (fulfill, reject) {
-    if (typeof docId !== 'string') {
-      return reject(new Error('doc id is required'));
+  if (typeof docId !== 'string') {
+    return PouchPromise.reject(new Error('doc id is required'));
+  }
+
+  return db.get(docId).catch(function (err) {
+    /* istanbul ignore next */
+    if (err.status !== 404) {
+      throw err;
+    }
+    return {};
+  }).then(function (doc) {
+    // the user might change the _rev, so save it for posterity
+    var docRev = doc._rev;
+    var newDoc = diffFun(doc);
+
+    if (!newDoc) {
+      // if the diffFun returns falsy, we short-circuit as
+      // an optimization
+      return { updated: false, rev: docRev };
     }
 
-    db.get(docId, function (err, doc) {
-      if (err) {
-        /* istanbul ignore next */
-        if (err.status !== 404) {
-          return reject(err);
-        }
-        doc = {};
-      }
-
-      // the user might change the _rev, so save it for posterity
-      var docRev = doc._rev;
-      var newDoc = diffFun(doc);
-
-      if (!newDoc) {
-        // if the diffFun returns falsy, we short-circuit as
-        // an optimization
-        return fulfill({updated: false, rev: docRev});
-      }
-
-      // users aren't allowed to modify these values,
-      // so reset them here
-      newDoc._id = docId;
-      newDoc._rev = docRev;
-      fulfill(tryAndPut(db, newDoc, diffFun));
-    });
+    // users aren't allowed to modify these values,
+    // so reset them here
+    newDoc._id = docId;
+    newDoc._rev = docRev;
+    return tryAndPut(db, newDoc, diffFun);
   });
 }
 
