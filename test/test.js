@@ -373,5 +373,15 @@ function tests(dbName, dbType) {
       });
     });
 
+    it('errors thrown in diff function shouldn\'t crash the system', function () {
+      return db.upsert('foo', function () {
+        throw new Error("An upsert diff error.");
+      }).then(function () {
+        throw new Error("Finished upsert without throwing error.");
+      }, function (e) {
+        should.exist(e);
+      });
+    });
+
   });
 }
