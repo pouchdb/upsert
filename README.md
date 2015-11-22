@@ -206,6 +206,12 @@ Resulting doc (same as example 1):
 }
 ```
 
+Breaking changes
+----
+
+* 2.0.0: breaks compatibility with PouchDB <4.0.1, see [#9](https://github.com/pouchdb/upsert/pull/9) for details.
+
+
 Building
 ----
     npm install
