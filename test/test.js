@@ -42,7 +42,7 @@ function tests(dbName, dbType) {
   });
   afterEach(function () {
     this.timeout(30000);
-    return Pouch.destroy(dbName);
+    return db.destroy();
   });
   describe(dbType + ': basic test suite', function () {
     this.timeout(30000);
