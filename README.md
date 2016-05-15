@@ -57,6 +57,8 @@ Perform an upsert (update or insert) operation. If you don't specify a `callback
   * If this `diffFunc` returns falsey, then the update won't be performed (as an optimization).
   * If the document does not already exist, then `{}` will be the input to `diffFunc`.
 
+**Note:** By design, the goal of this repo is to just provide a handler for synchronized logic. ```diffFunc``` must not make asynchronous calls.
+
 ##### Example 1
 
 A doc with a basic counter:
