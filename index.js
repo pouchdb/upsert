@@ -91,3 +91,8 @@ exports.putIfNotExists = function putIfNotExists(docId, doc, cb) {
 if (typeof window !== 'undefined' && window.PouchDB) {
   window.PouchDB.plugin(exports);
 }
+
+/* istanbul ignore next */
+if (typeof self !== 'undefined' && self.PouchDB) {
+  self.PouchDB.plugin(exports);
+}
