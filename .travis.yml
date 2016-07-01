@@ -14,8 +14,7 @@ before_script:
 env:
   matrix:
   - COMMAND=test
-  - CLIENT=firefox COMMAND=test
-  - CLIENT=selenium:phantomjs COMMAND=test
+  - COMMAND=test-browser
   - COMMAND=coverage
 
 branches:
