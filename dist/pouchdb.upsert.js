@@ -40,7 +40,8 @@ function tryAndPut(db, doc, diffFun) {
   return db.put(doc).then(function (res) {
     return {
       updated: true,
-      rev: res.rev
+      rev: res.rev,
+      id: doc._id
     };
   }, function (err) {
     /* istanbul ignore next */
