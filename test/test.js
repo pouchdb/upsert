@@ -52,6 +52,7 @@ function tests(dbName, dbType) {
       }).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('myid');
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -142,6 +143,7 @@ function tests(dbName, dbType) {
       }).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('myid');
         throw new Error('should not be here');
       }, function (err) {
         should.exist(err);
@@ -161,6 +163,7 @@ function tests(dbName, dbType) {
       }).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/2-/);
+        res.id.should.equal('myid');
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -179,6 +182,7 @@ function tests(dbName, dbType) {
       }).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('myid');
         return db.upsert('myid', function () {
           return false;
         });
@@ -200,6 +204,7 @@ function tests(dbName, dbType) {
       return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('foo');
         return db.get('foo');
       }).then(function (doc) {
         should.exist(doc._rev);
@@ -255,6 +260,7 @@ function tests(dbName, dbType) {
       return db.putIfNotExists({_id: 'foo', hey: 'yo'}).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('foo');
         return db.putIfNotExists({_id: 'foo', another: 'thing'});
       }).then(function () {
         return db.get('foo');
@@ -272,6 +278,7 @@ function tests(dbName, dbType) {
       return db.putIfNotExists('foo', {hey: 'yo'}).then(function (res) {
         res.updated.should.equal(true);
         res.rev.should.match(/1-/);
+        res.id.should.equal('foo');
         return db.putIfNotExists('foo', {another: 'thing'});
       }).then(function () {
         return db.get('foo');
