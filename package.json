@@ -15,7 +15,7 @@
     "couch",
     "couchdb"
   ],
-  "author": "",
+  "author": "Nolan Lawson <nolan@nolanlawson.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/nolanlawson/pouchdb-upsert/issues"
@@ -47,5 +47,6 @@
     "uglify-js": "^2.4.13",
     "watchify": "^3.9.0",
     "zuul": "^3.10.1"
-  }
+  },
+  "files": ["dist"]
 }
