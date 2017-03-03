@@ -1,6 +1,6 @@
 {
   "name": "pouchdb-upsert",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "PouchDB upsert and putIfNotExists functions",
   "main": "index.js",
   "repository": {
@@ -48,5 +48,7 @@
     "watchify": "^3.9.0",
     "zuul": "^3.10.1"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }
