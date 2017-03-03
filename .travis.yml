@@ -14,7 +14,6 @@ before_script:
 env:
   matrix:
   - COMMAND=test
-  - COMMAND=test-browser
   - COMMAND=coverage
 
 branches:
