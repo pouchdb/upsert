@@ -22,7 +22,6 @@
   },
   "scripts": {
     "test-node": "TEST_DB=testdb,http://localhost:5984/testdb istanbul test ./node_modules/mocha/bin/_mocha test/test.js",
-    "test-browser": "./bin/test-browser.js",
     "test-local": "zuul --ui mocha-bdd --no-coverage --local 9000 test/test.js",
     "jshint": "jshint -c .jshintrc *.js test/test.js",
     "test": "npm run jshint && ./bin/run-test.sh",
@@ -36,17 +35,17 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
-    "browserify": "~14.1.0",
-    "chai": "~3.5.0",
-    "chai-as-promised": "~6.0.0",
+    "browserify": "^14.1.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
     "es3ify": "^0.2.2",
     "istanbul": "^0.4.5",
-    "jshint": "~2.9.4",
-    "mocha": "~3.2.0",
+    "jshint": "^2.9.4",
+    "mocha": "^3.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "pouchdb-memory": "^6.0.0",
     "uglify-js": "^2.4.13",
-    "watchify": "~3.9.0",
+    "watchify": "^3.9.0",
     "zuul": "^3.10.1"
   }
 }
