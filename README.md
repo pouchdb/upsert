@@ -1,6 +1,8 @@
 PouchDB Upsert
 =====
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/pouchdb/upsert.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/pouchdb/upsert.svg)](https://travis-ci.org/pouchdb/upsert)
 
 A tiny plugin for PouchDB that provides two convenience methods:
