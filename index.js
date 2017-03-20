@@ -24,7 +24,7 @@ function upsertInner(db, docId, diffFun) {
     if (!newDoc) {
       // if the diffFun returns falsy, we short-circuit as
       // an optimization
-      return { updated: false, rev: docRev };
+      return { updated: false, rev: docRev, id: docId };
     }
 
     // users aren't allowed to modify these values,
