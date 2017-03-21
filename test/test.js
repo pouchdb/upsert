@@ -189,6 +189,7 @@ function tests(dbName, dbType) {
       }).then(function (res) {
         res.updated.should.equal(false);
         res.rev.should.match(/1-/);
+        res.id.should.equal('myid');
         return db.get('myid');
       }).then(function (doc) {
         should.exist(doc._rev);
