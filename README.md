@@ -250,3 +250,4 @@ The `TEST_DB` environment variable specifies the database that PouchDB should us
 ### Debugging in the browser
 
     npm run test-local
+
