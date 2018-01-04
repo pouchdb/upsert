@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
-    "browserify": "^14.1.0",
+    "browserify": "^15.0.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "es3ify": "^0.2.2",
