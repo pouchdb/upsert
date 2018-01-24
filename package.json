@@ -31,7 +31,7 @@
     "coverage": "npm test --coverage && istanbul check-coverage --lines 100 --function 100 --statements 100 --branches 100"
   },
   "dependencies": {
-    "pouchdb-promise": "^6.1.2"
+    "pouchdb-promise": "^6.4.2"
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
