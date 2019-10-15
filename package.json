@@ -34,7 +34,7 @@
     "pouchdb-promise": "^6.1.2"
   },
   "devDependencies": {
-    "bluebird": "^3.4.7",
+    "bluebird": "^3.7.1",
     "browserify": "^14.1.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
