@@ -44,7 +44,7 @@
     "mocha": "^3.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "pouchdb-memory": "^6.0.0",
-    "uglify-js": "^2.4.13",
+    "uglify-js": "^3.0.0",
     "watchify": "^3.9.0",
     "zuul": "^3.10.1"
   },
